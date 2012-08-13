@@ -64,7 +64,7 @@ function ipad_redirect_add_meta_boxes() {
 
 add_action( 'add_meta_boxes', 'ipad_redirect_add_meta_boxes' );
 
-function ipad_redirect_save_post( $post_id ) {
+function ipad_redirect_save_post( $post_id, $post ) {
 	// verify if this is an auto save routine. 
 	// If it is our form has not been submitted, so we dont want to do anything
 	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) 
@@ -72,11 +72,11 @@ function ipad_redirect_save_post( $post_id ) {
 
 	// verify this came from the our screen and with proper authorization,
 	// because save_post can be triggered at other times
-	if ( !wp_verify_nonce( $_POST['ipad_redirect_nonce'], plugin_basename( __FILE__ ) ) )
+	if ( !wp_verify_nonce( filter_input( INPUT_POST, 'ipad_redirect_nonce', FILTER_SANITIZE_STRING ), plugin_basename( __FILE__ ) ) )
 		return;
   
 	// Check permissions
-	if ( 'page' == $_POST['post_type'] ) {
+	if ( 'page' == $post->post_type ) {
     	if ( !current_user_can( 'edit_page', $post_id ) )
         	return;
   	} else {
@@ -94,4 +94,4 @@ function ipad_redirect_save_post( $post_id ) {
 	}
 }
 
-add_action( 'save_post', 'ipad_redirect_save_post' );
+add_action( 'save_post', 'ipad_redirect_save_post', 10, 2 );
