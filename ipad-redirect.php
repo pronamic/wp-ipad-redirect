@@ -23,8 +23,9 @@ function ipad_redirect() {
 		$user_agent = filter_input( INPUT_SERVER, 'HTTP_USER_AGENT', FILTER_SANITIZE_STRING );
 	
 		$is_ipad = strpos( $user_agent, 'iPad') !== false;
-	
-		if ( $is_ipad ) {
+		$is_iphone = strpos( $user_agent, 'iPhone') !== false;
+
+		if ( $is_ipad || $is_iphone ) {
 			$ipad_redirect_url = get_post_meta( $post->ID, '_ipad_redirect_url', true );
 	
 			if ( ! empty( $ipad_redirect_url ) ) {
